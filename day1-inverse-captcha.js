@@ -2,7 +2,14 @@ const puzzle = '6592822488931338589815525425236818285229555616392928433262436847
 
 const result = puzzle.split('').reduce((acc, c, idx, arr) => {
     const currNumber = parseInt(c);
-    const nextIdx = idx < (arr.length - 1) ? (idx + 1) : 0;
+
+    // Part 1
+    //const nextIdx = idx < (arr.length - 1) ? (idx + 1) : 0;
+
+    // Part 2
+    const steps = arr.length/2 + idx;
+    const nextIdx = steps < arr.length ? steps : (steps -arr.length);
+
     const nextNumber = parseInt(arr[nextIdx]);
 
     if (currNumber === nextNumber) {

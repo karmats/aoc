@@ -30,8 +30,27 @@ const minMax = (arr) => {
         return { max: max, min: min }
     }, {min: 0, max: 0})
 }
+
+const firstWholeDivision = (arr) => {
+    for (let i = 0; i < arr.length; i++) {
+        let curr = arr[i];
+        for (let j = i + 1; j < arr.length; j++) {
+            let comp = arr[j];
+            if (curr === comp) continue;
+            if (curr % comp === 0) {
+                return curr / comp;
+            } else if (comp % curr === 0) {
+                return comp / curr;
+            }
+        }
+    }
+}
 const result = puzzle.reduce((acc, c) => {
-    const currMinMax = minMax(c);
-    return acc + (currMinMax.max - currMinMax.min);
+    // Part 1
+    /*const currMinMax = minMax(c);
+    return acc + (currMinMax.max - currMinMax.min);*/
+
+    // Part 2
+    return acc + firstWholeDivision(c);
 }, 0)
 console.log(result);
