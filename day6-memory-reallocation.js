@@ -1,4 +1,5 @@
 const puzzle = [10, 3, 15, 10, 5, 15, 5, 15, 9, 2, 5, 8, 5, 2, 3, 6];
+//const puzzle = [0, 2, 7, 0];
 
 const previous = [];
 
@@ -31,6 +32,7 @@ const nextIdx = (arr, curr) => {
 
 let currentArray = puzzle.slice();
 let cycles = 0;
+let idxMatch = 0;
 while (true) {
     const highestWithIndex = findHighestWithIndex(currentArray);
 
@@ -40,17 +42,18 @@ while (true) {
         currentArray[i] = currentArray[i] + 1;
     }
     const newArray = currentArray.slice();
-    const alreadyExists = previous.reduce((acc, c) => {
+    const alreadyExists = previous.reduce((acc, c, idx) => {
         if (arrayEquals(c, newArray)) {
-            return true;
+            return {bool: true, idx: idx + 1};
         }
         return acc;
-    }, false);
+    }, { bool: false });
     cycles++;
-    if (alreadyExists) {
+    if (alreadyExists.bool) {
+        idxMatch = alreadyExists.idx;
         break;
     }
     previous.push(newArray);
 }
 
-console.log(cycles);
+console.log(cycles - idxMatch);

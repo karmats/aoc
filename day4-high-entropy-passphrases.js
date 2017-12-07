@@ -529,6 +529,7 @@ const isAnagram = (word1, word2) => {
 }
 const arrayHasValidPasswords = (arr) => {
     return arr.filter((word, wordIdx, wordArr) => {
+        // Anagram part = 2
         let anagram = false;
         for (let i = wordIdx; i < wordArr.length - 1; i++) {
             if (anagram) {
