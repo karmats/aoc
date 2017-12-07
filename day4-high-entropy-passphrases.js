@@ -513,13 +513,34 @@ const puzzle = [
     ['rvbu', 'czwpdit', 'vmlihg', 'spz', 'lfaxxev', 'zslfuto', 'oog', 'dvoksub']
 ]
 
-const arrayIsUnique = (arr) => {
+const isAnagram = (word1, word2) => {
+    const word1Arr = word1.split('');
+    const word2Arr = word2.split('');
+    if (word1Arr.length !== word2Arr.length) {
+        return false;
+    }
+    for (let i = 0; i < word1Arr.length; i++) {
+        const idx = word2Arr.indexOf(word1Arr[i]);
+        if (idx >= 0) {
+            word2Arr.splice(idx, 1);
+        }
+    }
+    return word2Arr.length === 0;
+}
+const arrayHasValidPasswords = (arr) => {
     return arr.filter((word, wordIdx, wordArr) => {
-        return wordArr.indexOf(word) === wordIdx;
+        let anagram = false;
+        for (let i = wordIdx; i < wordArr.length - 1; i++) {
+            if (anagram) {
+                continue;
+            }
+            anagram = isAnagram(word, wordArr[i + 1]);
+        }
+        return wordArr.indexOf(word) === wordIdx && !anagram;
     }).length === arr.length;
 }
 const result = puzzle.reduce((acc, c) => {
-    if (arrayIsUnique(c)) {
+    if (arrayHasValidPasswords(c)) {
         return acc + 1;
     }
     return acc;
