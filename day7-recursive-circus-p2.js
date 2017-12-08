@@ -59,18 +59,6 @@ const find = (program, tree, diff) => {
     }
 }
 
-const childWeights = (programs, tree, weight) => {
-    const fullPrograms = programs.map(p => getProgram(p, tree));
-    fullPrograms.forEach((prog) => {
-        prog.fullChildren = prog.childs.map(p => getProgram(p, tree));
-    })
-    fullPrograms.forEach((prog) => {
-        const weight = prog.weight + prog.fullChildren.reduce((acc, c) => acc + c.weight, 0)
-        console.log(prog.name, weight)
-        
-    });
-}
-
 fs.readFile('day7-puzzle.txt', 'utf-8', (err, data) => {
     const puzzle = data.split('\n').reduce((acc, c) => {
         const hasChildren = c.indexOf('->') > 0;
