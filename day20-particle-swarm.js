@@ -59,52 +59,29 @@ fs.readFile('day20-puzzle.txt', 'utf-8', (err, data) => {
         }, { pos: 0, vel: 0 })
     console.log(result.pos)
 
+    const posAtTime = (pos, v, a, time) => {
+        return a*time*(time+1)/2 + v*time + pos;
+    }
     // Part 2
     const posEquals = (p1, p2) => {
         return p1[0] === p2[0] && p1[1] === p2[1] && p1[2] === p2[2]
     }
-    const hasPassed = (p1, p1Next, p2, p2Next) => {
-        const [x1, y1, z1] = p1;
-        const [x1Next, y1Next, z1Next] = p1Next;
-        const [x2, y2, z2] = p2;
-        const [x2Next, y2Next, z2Next] = p2Next;
-        return ((x1 > x2 && x1Next < x2Next) || (x1 < x2 && x1Next > x2Next)) ||
-               ((y1 > y2 && y1Next < y2Next) || (y1 < y2 && y1Next > y2Next)) ||
-               ((z1 > z2 && z1Next < z2Next) || (z1 < z2 && z1Next > z2Next))
-    }
-    const willCollide = (p1, p2, rounds) => {
-        if (posEquals(p1.p, p2.p)) {
-            return true;
-        }
-        const newVelocity = p1.v.map((v, idx) => v + p1.a[idx]);
-        const newPos = p1.p.map((p, idx) => p + newVelocity[idx]);
-        const nextp1 = {
-            p: newPos,
-            v: newVelocity,
-            a: p1.a
-        };
-        const newVelocity2 = p2.v.map((v, idx) => v + p2.a[idx]);
-        const newPos2 = p2.p.map((p, idx) => p + newVelocity2[idx]);
-        const nextp2 = {
-            p: newPos2,
-            v: newVelocity2,
-            a: p2.a
-        }
-        if (hasPassed(p1.p, nextp1.p, p2.p, nextp2.p) || rounds > 100) {
-            return false;
-        }
-        return willCollide(nextp1, nextp2, rounds + 1);
-    }
-    let collidingParticles = [];
-    for (let i = 0; i < particles.length - 1; i++) {
-        const p1 = particles[i];
-        for (let j = i + 1; j < particles.length; j++) {
-            const p2 = particles[j];
-            if (willCollide(p1, p2, 0)) {
-                collidingParticles = collidingParticles.concat(p1.pos, p2.pos);
+    let dead = [];
+    let parts = []
+    for (let time = 0; time < 50; time++) {
+        parts = particles.filter((p) => dead.indexOf(p.pos) < 0)
+        for (let i = 0; i < parts.length - 1; i++) {
+            const p1 = parts[i];
+            const pos1 = p1.p.map((p, idx) => posAtTime(p, p1.v[idx], p1.a[idx], time));
+            for (let j = i + 1; j < parts.length; j++) {
+                const p2 = parts[j];
+                const pos2 = p2.p.map((p, idx) => posAtTime(p, p2.v[idx], p2.a[idx], time));
+                if (posEquals(pos1, pos2)) {
+                    dead.push(p1.pos, p2.pos)
+                }
             }
         }
+        dead = dead.filter((d, idx, arr) => arr.indexOf(d) === idx);
     }
-    const unique = collidingParticles.filter((p, idx, arr) => arr.indexOf(p) === idx);
-    console.log(particles.length - unique.length);
+    console.log(parts.length);
 })
