@@ -124,7 +124,7 @@ const move = (acc, part2) => {
     }
     if (newPos.x < 0) {
         for (let i = 0; i < mtx.length; i++) {
-            mtx[i].splice(0, 0, []);
+            mtx[i].splice(0, 0, '.');
         }
         newPos.x++;
     }
