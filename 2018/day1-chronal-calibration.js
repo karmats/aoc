@@ -1,11 +1,9 @@
-const fs = require("fs");
+const { fileToPuzzle } = require("./util");
 
 const sum = numbers =>
   numbers.reduce((result, number) => parseInt(number) + result, 0);
 
-fs.readFile("day1-puzzle.txt", "utf-8", (_, data) => {
-  const puzzle = data.split("\n");
-
+fileToPuzzle("day1-puzzle.txt", puzzle => {
   // Part 1
   console.log(sum(puzzle));
 
