@@ -18,4 +18,4 @@ fileToPuzzle("day1-puzzle.txt", puzzle => {
     }
     frequencies.push(currFrequency);
   }
-});
+}, { isNumber: true });
