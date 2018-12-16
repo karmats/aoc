@@ -133,7 +133,16 @@ fileToPuzzle("./day13-puzzle.txt", puzzle => {
       }
     }
   }
-  loop: while (true) {
+  let collidedElves = [];
+  let firstCollision = true;
+  while (true) {
+    elves = elves.filter(e => collidedElves.indexOf(e) < 0);
+    if (elves.length === 1) {
+      const pos = elves[0].position;
+      console.log(`${pos.x},${pos.y}`);
+      break;
+    }
+    collidedElves = [];
     elves.sort(elfCompare);
     for (let e = 0; e < elves.length; e++) {
       const elf = elves[e];
@@ -159,12 +168,12 @@ fileToPuzzle("./day13-puzzle.txt", puzzle => {
       }
       const collidingElves = collision(elves);
       if (collidingElves) {
-        const pos = collidingElves[0].position;
-        elves = elves.filter(
-          e => e !== collidingElves[0] && e !== collidingElves[1]
-        );
-        console.log(`${pos.x},${pos.y}`);
-        break loop;
+        collidedElves = collidedElves.concat(collidingElves);
+        if (firstCollision) {
+          const pos = collidingElves[0].position;
+          console.log(`${pos.x},${pos.y}`);
+          firstCollision = false;
+        }
       }
     }
   }
