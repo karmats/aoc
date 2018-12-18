@@ -87,8 +87,12 @@ const beforeRegex = /Before:\s*\[(.*)\]/;
 const afterRegex = /After:\s*\[(.*)\]/;
 fileToPuzzle("./day16-puzzle.txt", puzzle => {
   const operations = [];
+  const program = [];
   for (let i = 0; ; i = i + 4) {
     if (!puzzle[i]) {
+      for (j = i + 2; j < puzzle.length; j++) {
+        program.push(puzzle[j].split(" ").map(p => +p));
+      }
       break;
     }
     const operation = {
@@ -104,7 +108,10 @@ fileToPuzzle("./day16-puzzle.txt", puzzle => {
     };
     operations.push(operation);
   }
+
+  // Day 1
   let threeOrMore = 0;
+  const opcodes = new Array(16).fill(instructions.slice());
   operations.forEach(operation => {
     let count = 0;
     const after = operation.after.join("");
@@ -114,6 +121,9 @@ fileToPuzzle("./day16-puzzle.txt", puzzle => {
       );
       if (output === after) {
         count++;
+      } else {
+        const opcode = operation.input[0];
+        opcodes[opcode] = opcodes[opcode].filter(instr => instr !== i);
       }
     });
     if (count >= 3) {
@@ -121,4 +131,25 @@ fileToPuzzle("./day16-puzzle.txt", puzzle => {
     }
   });
   console.log(threeOrMore);
+
+  // Day 2
+  const calculateOpcodes = opc => {
+    const certain = opc.filter(o => o.length === 1).map(o => o[0]);
+    if (opc.every(o => o.length === 1)) {
+      return opc.reduce((acc, c) => acc.concat(c), []);
+    }
+    const newOpc = opc.map(op =>
+      op.length === 1 ? op : op.filter(o => certain.indexOf(o) < 0)
+    );
+    return calculateOpcodes(newOpc);
+  };
+  const opcodesResult = calculateOpcodes(opcodes);
+
+  let current = [0, 0, 0, 0];
+  for (let i = 0; i < program.length; i++) {
+    const input = program[i];
+    const opcode = opcodesResult[input[0]];
+    current = doInstruction(opcode, current, input);
+  }
+  console.log(current[0]);
 });
