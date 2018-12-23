@@ -41,7 +41,8 @@ const transform = (x, y, area) => {
 fileToPuzzle("./day18-puzzle.txt", puzzle => {
   const size = puzzle.length;
   let area = puzzle.map(p => p.split(""));
-  for (let minute = 0; minute < 10; minute++) {
+  const reaccuring = [];
+  for (let minute = 1; minute < 600; minute++) {
     let newArea = area.map(a => a.slice());
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
@@ -49,9 +50,23 @@ fileToPuzzle("./day18-puzzle.txt", puzzle => {
       }
     }
     area = newArea;
+
+    // Part 1
+    if (minute === 10) {
+      console.log(
+        area.reduce((acc, c) => acc + count(c, "|"), 0) *
+          area.reduce((acc, c) => acc + count(c, "#"), 0)
+      );
+    }
+    // Reaccuring loop after ~500 minutes
+    if (minute >= 500 && minute < 528) {
+      reaccuring.push(
+        area.reduce((acc, c) => acc + count(c, "|"), 0) *
+          area.reduce((acc, c) => acc + count(c, "#"), 0)
+      );
+    }
   }
-  console.log(
-    area.reduce((acc, c) => acc + count(c, "|"), 0) *
-      area.reduce((acc, c) => acc + count(c, "#"), 0)
-  );
+
+  // Part 2
+  console.log(reaccuring[(1000000000 - 500) % 28]);
 });
