@@ -13,4 +13,11 @@ const fileToPuzzle = (
   });
 };
 
-module.exports = { fileToPuzzle };
+const leftPad = (num, padding) => {
+  while(num.length < padding) {
+    num = '0' + num;
+  }
+  return num;
+}
+
+module.exports = { fileToPuzzle, leftPad };
