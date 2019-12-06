@@ -1,6 +1,5 @@
 const { fileToPuzzle } = require("./util");
 
-const ROOT = "COM";
 fileToPuzzle("day6-puzzle.txt", puzzle => {
   const orbits = puzzle.slice();
   const result = {};
@@ -11,18 +10,39 @@ fileToPuzzle("day6-puzzle.txt", puzzle => {
 
   // Part 1
   let totalOrbits = 0;
-  const ancestors = childs => {
+  const countOrbits = childs => {
     if (childs && Array.isArray(childs)) {
       childs.forEach(c => {
-        ancestors(result[c]);
+        countOrbits(result[c]);
         totalOrbits++;
       });
     }
   };
   Object.keys(result).forEach(k => {
-    ancestors(result[k]);
+    countOrbits(result[k]);
   });
-  ancestors(result, result[ROOT]);
   console.log(totalOrbits);
 
+  // Part 2
+  const ancestors = (child, ans) => {
+    for (k in result) {
+      if (result[k] && result[k].indexOf(child) >= 0) {
+        return ancestors(k, [...ans, k]);
+      }
+    }
+    return ans;
+  };
+  const sanAncestors = ancestors("SAN", []);
+  const youAncestors = ancestors("YOU", []);
+  const distances = youAncestors.reduce((acc, c, idx) => {
+    const sanIdx = sanAncestors.indexOf(c);
+    if (!acc && sanIdx >= 0) {
+      return {
+        distanceYou: idx,
+        distanceSan: sanIdx
+      };
+    }
+    return acc;
+  }, null);
+  console.log(distances.distanceYou + distances.distanceSan);
 });
