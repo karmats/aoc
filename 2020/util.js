@@ -8,7 +8,7 @@ const fileToPuzzle = (
   fs.readFile(`${__dirname}/${filename}`, "utf-8", (_, data) => {
     const result = data
       .split(options.separator || "\n")
-      .map(d => (options.isNumber ? parseInt(d) : d));
+      .map(d => (options.isNumber ? +d : d));
     callback(result);
   });
 };
