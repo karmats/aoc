@@ -12,9 +12,7 @@ const toPassports = (puzzle) =>
       (acc, p, idx) => {
         if (!p || idx === puzzle.length - 1) {
           return {
-            passports: acc.passports.concat(
-              idx === puzzle.length - 1 ? p + " " + acc.curr : acc.curr
-            ),
+            passports: acc.passports.concat(idx === puzzle.length - 1 ? p + " " + acc.curr : acc.curr),
             curr: "",
           };
         }
@@ -31,9 +29,7 @@ const toPassports = (puzzle) =>
     .passports.map((p) => p.trim());
 
 const validateNoMissingFields = (passport) =>
-  REQUIRED_FIELDS.filter(
-    (f) => !passport.split(" ").find((pf) => pf.split(":")[0] === f)
-  ).length === 0;
+  REQUIRED_FIELDS.filter((f) => !passport.split(" ").find((pf) => pf.split(":")[0] === f)).length === 0;
 
 const validateFields = (passport) => {
   const fields = passport.split(" ").map((p) => p.split(":"));
@@ -105,6 +101,6 @@ fileToPuzzle(
     console.log(noMissingFieldsPassports.filter(validateFields).length);
   },
   {
-    separator: "\r\n",
+    separator: "\n",
   }
 );
