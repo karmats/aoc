@@ -6,27 +6,7 @@ const HEX_COLOR_REGEX = /^#[0-9a-zA-Z]{6}$/;
 const PID_REGEX = /^\d{9}$/;
 const VALID_EYE_COLORS = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
 
-const toPassports = (puzzle) =>
-  puzzle
-    .reduce(
-      (acc, p, idx) => {
-        if (!p || idx === puzzle.length - 1) {
-          return {
-            passports: acc.passports.concat(idx === puzzle.length - 1 ? p + " " + acc.curr : acc.curr),
-            curr: "",
-          };
-        }
-        return {
-          passports: acc.passports,
-          curr: p + " " + acc.curr,
-        };
-      },
-      {
-        curr: "",
-        passports: [],
-      }
-    )
-    .passports.map((p) => p.trim());
+const toPassports = (puzzle) => puzzle.map((p) => p.split("\n").join(" ").trim());
 
 const validateNoMissingFields = (passport) =>
   REQUIRED_FIELDS.filter((f) => !passport.split(" ").find((pf) => pf.split(":")[0] === f)).length === 0;
@@ -101,6 +81,6 @@ fileToPuzzle(
     console.log(noMissingFieldsPassports.filter(validateFields).length);
   },
   {
-    separator: "\n",
+    separator: /\n\s?\n/,
   }
 );
