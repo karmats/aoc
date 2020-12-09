@@ -31,13 +31,9 @@ const findMax = (numbers) => numbers.reduce((max, c) => (c > max ? c : max), 0);
 
 const findContiguosSum = (goal, numbers) => {
   for (let idx = 0; idx < numbers.length; idx++) {
-    let sum = 0;
-    let endIdx = idx + 1;
-    let currNumbers = [];
-    while (sum < goal) {
+    let endIdx, sum, currNumbers;
+    for (endIdx = idx + 1, sum = 0, currNumbers = []; sum < goal; sum = sumNumbers(currNumbers), endIdx++) {
       currNumbers = numbers.slice(idx, endIdx);
-      sum = sumNumbers(currNumbers);
-      endIdx++;
     }
     if (sum === goal) {
       return currNumbers;
