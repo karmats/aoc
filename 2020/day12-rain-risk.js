@@ -1,4 +1,3 @@
-const { dir } = require("console");
 const { fileToPuzzle } = require("./util");
 
 const STEP_REGEX = /^([A-Z])(\d*)$/;
@@ -54,10 +53,44 @@ const makeStep = (pos, step) => {
   return doStep(s, pos);
 };
 
+const rotateWaypoint = ([direction, degrees], position) => {
+  const rotations = degrees / 90;
+  let [x, y] = position;
+  for (let i = 0; i < rotations; i++) {
+    [x, y] = direction === "R" ? [y, -x] : [-y, x];
+  }
+  return [x, y];
+};
+
+const moveShip = (steps, [wX, wY], [sX, sY]) => [sX + wX * steps, sY + wY * steps];
+
+const makeStepWithWaypoint = (positions, step) => {
+  const [key, value] = step;
+  if (key === "L" || key === "R") {
+    return {
+      ...positions,
+      waypoint: rotateWaypoint(step, positions.waypoint),
+    };
+  } else if (key === "F") {
+    return {
+      ...positions,
+      ship: moveShip(value, positions.waypoint, positions.ship),
+    };
+  }
+  return {
+    ...positions,
+    waypoint: doStep(step, positions.waypoint),
+  };
+};
+
 const manhattanDistance = ([x, y]) => Math.abs(x) + Math.abs(y);
 
 fileToPuzzle("day12-puzzle.txt", (puzzle) => {
-  // Part 1
   const steps = puzzleToSteps(puzzle);
+
+  // Part 1
   console.log(manhattanDistance(steps.reduce(makeStep, [0, 0, 90])));
+
+  // Part 2
+  console.log(manhattanDistance(steps.reduce(makeStepWithWaypoint, { waypoint: [10, 1], ship: [0, 0] }).ship));
 });
