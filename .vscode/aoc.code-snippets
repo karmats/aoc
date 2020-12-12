@@ -13,6 +13,7 @@
       "const { fileToPuzzle } = require('./util');",
       "",
       "fileToPuzzle('day$1-puzzle.txt', (puzzle) => {",
+      "  console.log(puzzle)",
       "});"
     ],
     "description": "Setup puzzle"
