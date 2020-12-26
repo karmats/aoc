@@ -35,8 +35,11 @@ const toTileId = (instruction) => {
         throw new Error("Unknown direction " + direction);
     }
   }
-  return [horizontal, vertical].join(",");
+  return tileCoordToId([horizontal, vertical]);
 };
+
+const tileIdToCoord = (tileId) => tileId.split(",").map((t) => +t);
+const tileCoordToId = (tileCoord) => tileCoord.join(",");
 
 const calculateFlippedTiles = (instructions) => {
   let flipped = [];
@@ -52,6 +55,56 @@ const calculateFlippedTiles = (instructions) => {
   return flipped;
 };
 
+const findMax = (arr) => arr.reduce((max, c) => (c > max ? c : max), Number.MIN_SAFE_INTEGER);
+const findMin = (arr) => arr.reduce((min, c) => (c < min ? c : min), Number.MAX_SAFE_INTEGER);
+const getSurrounding = ([x, y]) => [
+  tileCoordToId([x - 1, y]),
+  tileCoordToId([x - 0.5, y + 0.5]),
+  tileCoordToId([x + 0.5, y + 0.5]),
+  tileCoordToId([x + 1, y]),
+  tileCoordToId([x + 0.5, y - 0.5]),
+  tileCoordToId([x - 0.5, y - 0.5]),
+];
+const countBlackTiles = (blacktTiles, tiles) => tiles.reduce((count, tile) => (blacktTiles.includes(tile) ? count + 1 : count), 0);
+const flip = (tiles) => {
+  const newTiles = [];
+
+  const tileCoords = tiles.map(tileIdToCoord);
+  const xArr = tileCoords.map((t) => t[0]);
+  const [minX, maxX] = [findMin(xArr), findMax(xArr)];
+  const yArr = tileCoords.map((t) => t[1]);
+  const [minY, maxY] = [findMin(yArr), findMax(yArr)];
+  for (let y = minY - 1; y <= maxY + 1; y += 0.5) {
+    for (let x = minX - 1; x <= maxX + 1; x += 0.5) {
+      const coord = [x, y];
+      const id = tileCoordToId(coord);
+      const isBlack = tiles.includes(id);
+      const surrounding = getSurrounding(coord);
+      const surroundingBlackTiles = countBlackTiles(tiles, surrounding);
+      if (isBlack && (surroundingBlackTiles === 1 || surroundingBlackTiles === 2)) {
+        newTiles.push(id);
+      } else if (!isBlack && surroundingBlackTiles === 2) {
+        newTiles.push(id);
+      }
+    }
+  }
+  return newTiles;
+};
+
+const flipTiles = (tiles, days) => {
+  let flippedTiles = tiles.slice();
+  for (let i = 0; i < days; i++) {
+    flippedTiles = flip(flippedTiles);
+  }
+  return flippedTiles;
+};
+
 fileToPuzzle("day24-puzzle.txt", (puzzle) => {
-  console.log(calculateFlippedTiles(puzzle).length);
+  const flippedTiles = calculateFlippedTiles(puzzle);
+
+  // Part 1
+  console.log(flippedTiles.length);
+
+  // Part 2
+  console.log(flipTiles(flippedTiles, 100).length);
 });
