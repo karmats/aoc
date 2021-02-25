@@ -1,6 +1,6 @@
 const { fileToPuzzle } = require("./util");
 
-const MARKER_REGEX = /\((\d*)x(\d*)\)/;
+const MARKER_REGEX = /\((\d+)x(\d+)\)/;
 
 const decompress = (chars, pos) => {
   const currChars = chars.slice(pos);
@@ -19,9 +19,29 @@ const decompress = (chars, pos) => {
   }
   return chars;
 };
+const countDecompressed = (chars) => {
+  const weights = chars.split("").map(() => 1);
+  let count = 0;
+  for (let i = 0; i < chars.length; i++) {
+    const char = chars[i];
+    if (char === "(") {
+      const end = chars.indexOf(")", i);
+      const expression = chars.substring(i, end + 1);
+      const [, length, times] = MARKER_REGEX.exec(expression);
+      for (let j = end; j <= end + Number(length); j++) {
+        weights[j] *= Number(times);
+      }
+      i = end;
+    } else {
+      count += weights[i];
+    }
+  }
+  return count;
+};
 
 fileToPuzzle("day9-puzzle.txt", (puzzle) => {
-  let decompressed = decompress(puzzle[0], 0);
   // Part 1
-  console.log(decompressed.length);
+  console.log(decompress(puzzle[0], 0).length);
+  // Part 2
+  console.log(countDecompressed(puzzle[0]));
 });
