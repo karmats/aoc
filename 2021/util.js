@@ -20,4 +20,8 @@ const leftPad = (num, padding) => {
   return num;
 }
 
-module.exports = { fileToPuzzle, leftPad };
+const replaceAtIndex = (string, index, replacement) => {
+  return string.substr(0, index) + replacement + string.substr(index + replacement.length);
+}
+
+module.exports = { fileToPuzzle, leftPad, replaceAtIndex };
