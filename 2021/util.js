@@ -20,4 +20,9 @@ const replaceAtIndex = (string, index, replacement) => {
 
 const sum = (arr) => arr.reduce((acc, c) => acc + c, 0);
 
-module.exports = { fileToPuzzle, leftPad, replaceAtIndex, sum };
+const findMax = (arr) => arr.reduce((max, c) => (c > max ? c : max), 0);
+const findMin = (arr) => arr.reduce((min, c) => (c < min ? c : min), Number.MAX_SAFE_INTEGER);
+
+const calculatePartialSum = (num) => (num === 0 ? 0 : (num * (num + 1)) / 2);
+
+module.exports = { fileToPuzzle, leftPad, replaceAtIndex, sum, findMax, findMin, calculatePartialSum };
