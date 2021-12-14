@@ -25,4 +25,6 @@ const findMin = (arr) => arr.reduce((min, c) => (c < min ? c : min), Number.MAX_
 
 const calculatePartialSum = (num) => (num === 0 ? 0 : (num * (num + 1)) / 2);
 
-module.exports = { fileToPuzzle, leftPad, replaceAtIndex, sum, findMax, findMin, calculatePartialSum };
+const printGrid = (grid) => grid.map((g) => g.join("")).join("\n");
+
+module.exports = { fileToPuzzle, leftPad, replaceAtIndex, sum, findMax, findMin, calculatePartialSum, printGrid };
