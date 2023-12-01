@@ -1,17 +1,11 @@
 import fs from "fs";
+import { fileURLToPath } from "url";
 
 export const fileToPuzzle = (filename, callback, options = { separator: "\n", isNumber: false }) => {
-  fs.readFile(`${__dirname}/${filename}`, "utf-8", (_, data) => {
+  fs.readFile(fileURLToPath(`${import.meta.url}/../${filename}`), "utf-8", (_, data) => {
     const result = data.split(options.separator || "\n").map((d) => (options.isNumber ? +d : d));
     callback(result);
   });
-};
-
-export const leftPad = (num, padding) => {
-  while (num.length < padding) {
-    num = "0" + num;
-  }
-  return num;
 };
 
 export const replaceAtIndex = (string, index, replacement) => {
