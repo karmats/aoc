@@ -18,3 +18,5 @@ export const findMax = (arr) => arr.reduce((max, c) => (c > max ? c : max), 0);
 export const findMin = (arr) => arr.reduce((min, c) => (c < min ? c : min), Number.MAX_SAFE_INTEGER);
 
 export const printGrid = (grid) => grid.map((g) => g.join("")).join("\n");
+
+export const isNumber = (n) => !isNaN(+n);
