@@ -1,4 +1,42 @@
-import { fileToPuzzle, findMin, isNumber } from "./util.mjs";
+import { fileToPuzzle, isNumber } from "./util.mjs";
+
+const getPath = (seed, maps) => {
+  const path = [seed];
+  let currentOutput = seed;
+  maps.forEach((map) => {
+    let found = false;
+    for (let i = 0; i < map.length; i++) {
+      const [destination, source, length] = map[i];
+      if (currentOutput >= source && currentOutput < source + length) {
+        const destIdx = currentOutput - source;
+        const newOutput = destination + destIdx;
+        path.push(newOutput);
+        currentOutput = newOutput;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      path.push(currentOutput);
+    }
+  });
+  return path;
+};
+const getLocation = (seed, maps) => {
+  let currentOutput = seed;
+  maps.forEach((map) => {
+    for (let i = 0; i < map.length; i++) {
+      const [destination, source, length] = map[i];
+      if (currentOutput >= source && currentOutput < source + length) {
+        const destIdx = currentOutput - source;
+        const newOutput = destination + destIdx;
+        currentOutput = newOutput;
+        break;
+      }
+    }
+  });
+  return currentOutput;
+};
 
 fileToPuzzle(
   "day5-puzzle.txt",
@@ -19,32 +57,29 @@ fileToPuzzle(
             .map(Number)
         )
     );
-    let currMin = Number.MAX_SAFE_INTEGER;
+    // Part 1
+    let currMinPart1 = Number.MAX_SAFE_INTEGER;
     seeds.forEach((seed) => {
-      const path = [seed];
-      let currentOutput = seed;
-      maps.forEach((map) => {
-        let found = false;
-        for (let i = 0; i < map.length; i++) {
-          const [destination, source, length] = map[i];
-          if (currentOutput >= source && currentOutput < source + length) {
-            const destIdx = currentOutput - source;
-            const newOutput = destination + destIdx;
-            path.push(newOutput);
-            currentOutput = newOutput;
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          path.push(currentOutput);
-        }
-      });
-      if (path[path.length - 1] < currMin) {
-        currMin = path[path.length - 1];
+      const path = getPath(seed, maps);
+      if (path[path.length - 1] < currMinPart1) {
+        currMinPart1 = path[path.length - 1];
       }
     });
-    console.log(currMin);
+    console.log(currMinPart1);
+
+    // Part 2
+    let currMinPart2 = Number.MAX_SAFE_INTEGER;
+    for (let i = 0; i < seeds.length; i += 2) {
+      const [start, range] = [seeds[i], seeds[i + 1]];
+      for (let j = start; j < start + range; j++) {
+        const location = getLocation(j, maps);
+        if (location < currMinPart2) {
+          currMinPart2 = location;
+        }
+      }
+    }
+
+    console.log(currMinPart2);
   },
   {
     separator: "\n\n",
