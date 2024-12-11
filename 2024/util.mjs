@@ -20,3 +20,9 @@ export const findMin = (arr) => arr.reduce((min, c) => (c < min ? c : min), Numb
 export const printGrid = (grid) => grid.map((g) => g.join("")).join("\n");
 
 export const isNumber = (n) => !isNaN(+n);
+
+export const swapItems = (arr, idx1, idx2) => {
+  arr[idx1] = arr.splice(idx2, 1, arr[idx1])[0];
+  return arr;
+}
+
