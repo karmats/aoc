@@ -1,24 +1,5 @@
 import { fileToPuzzle } from "./util.mjs";
 
-const checkIsLoop = (possibleLoops) => {
-  const lastRoute = [];
-  const startDirection = possibleLoops[possibleLoops.length - 1].split("_")[2];
-  let currentDirection = startDirection;
-  let directionChanged = false;
-  for (let i = possibleLoops.length - 1; i >= 0; i--) {
-    currentDirection = possibleLoops[i].split("_")[2];
-    if (currentDirection !== startDirection) {
-      directionChanged = true;
-    }
-    lastRoute.unshift(possibleLoops[i]);
-    if (directionChanged && currentDirection === startDirection) {
-      const previousRoute = possibleLoops.slice(i - lastRoute.length * 2, i - lastRoute.length);
-      const routeString = lastRoute.join("|");
-      return routeString === previousRoute.join("|");
-    }
-  }
-  return false;
-};
 const walk = (puzzle, startPos) => {
   let [x, y] = startPos.slice();
   const visited = [`${x}_${y}`];
@@ -46,7 +27,7 @@ const walk = (puzzle, startPos) => {
         visited.push(visitedPos);
       } else {
         possibleLoops.push(`${visitedPos}_${direction}`);
-        if (checkIsLoop(possibleLoops)) {
+        if (!!possibleLoops.find((loop, idx, arr) => arr.indexOf(loop) !== idx)) {
           return { visited, isLoop: true };
         }
       }
@@ -66,7 +47,7 @@ fileToPuzzle("day6-puzzle.txt", (puzzle) => {
   let loops = 0;
   for (let i = 0; i < puzzle.length; i++) {
     for (let j = 0; j < puzzle[i].length; j++) {
-      if (puzzle[i][j] !== "#") {
+      if (puzzle[i][j] !== "#" && visited.includes(`${j}_${i}`)) {
         const obstaclePuzzle = puzzle.slice();
         obstaclePuzzle[i] = obstaclePuzzle[i].substring(0, j) + "#" + obstaclePuzzle[i].substring(j + 1);
         const result = walk(obstaclePuzzle, startPos);
